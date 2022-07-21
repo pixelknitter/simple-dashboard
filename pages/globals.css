@@ -10,12 +10,29 @@ body {
   box-sizing: border-box;
 }
 
-.homePageLinkContainer {
-  display:flex;
+.pageContainer {
+  display: flex;
   flex-direction: column;
+  margin: 0.5rem;
+}
+
+.homePageContentContainer {
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem;
+}
+
+.pageLinkContainer {
+  display: flex;
   gap: 8px;
 }
-.homePageLinkContainer > a {
+.pageLinkContainer > * {
   font-size: 2rem;
-  text-decoration: underline;
+  padding: 0.15rem;
+  cursor: pointer;
+}
+
+.pageLinkContainer > *:hover {
+  background-color: rgba(200, 70, 200, 0.7);
+  border-radius: 0.5rem;
 }

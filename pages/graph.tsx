@@ -11,6 +11,8 @@ import {
 } from "chart.js"
 import { Line } from "react-chartjs-2"
 import { useMemo } from "react"
+import Link from "next/link"
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded"
 
 ChartJS.register(
   CategoryScale,
@@ -222,7 +224,12 @@ const Graph: NextPage = () => {
   }, [])
 
   return (
-    <div>
+    <div className="pageContainer">
+      <div className="pageLinkContainer">
+        <Link href="/" passHref>
+          <HomeRoundedIcon />
+        </Link>
+      </div>
       <Line options={options} data={data} />
     </div>
   )
