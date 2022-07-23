@@ -1,17 +1,16 @@
 import { NextPage } from "next"
-import Link from "next/link"
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded"
+import Layout from "../components/Layout"
+// import useSWR from "swr"
 
 const Notes: NextPage = () => {
+  // const { data, error } = useSWR<Post[], Error>(
+  //   "/api/post",
+  //   fetcher
+  // )
   return (
-    <div className="pageContainer">
-      <div className="pageLinkContainer">
-        <Link href="/" passHref>
-          <HomeRoundedIcon />
-        </Link>
-      </div>
+    <Layout>
       <p>Render Notes Here!</p>
-    </div>
+    </Layout>
   )
 }
 
