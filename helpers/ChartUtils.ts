@@ -36,3 +36,18 @@ export function generateChartDataSetByUser<T extends { user: string }>(
       .values()
   )
 }
+
+export function generateChartLabels<T, K extends keyof T>(
+  data: Array<T>,
+  property: K
+): Array<number | string> {
+  return Array.from(
+    data
+      .reduce((set, element) => {
+        set.add(element[property])
+        return set
+        // FIXME: this should be any types of the propery set
+      }, new Set<any>())
+      .values()
+  )
+}

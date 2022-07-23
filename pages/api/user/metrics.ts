@@ -2,7 +2,16 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { FeedEvent } from "../../../models/FeedEvents"
 
-export const testData: FeedEvent[] = [
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<{ data: FeedEvent[] }>
+) {
+  if (req.method === "GET") {
+    res.status(200).json({ data: testData })
+  }
+}
+
+const testData: FeedEvent[] = [
   {
     id: 0,
     user: "david",
@@ -116,12 +125,3 @@ export const testData: FeedEvent[] = [
     description: "",
   },
 ]
-
-export default function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<{ data: FeedEvent[] }>
-) {
-  if (req.method === "GET") {
-    res.status(200).json({ data: testData })
-  }
-}

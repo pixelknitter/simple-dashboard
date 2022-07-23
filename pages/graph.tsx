@@ -14,9 +14,13 @@ import { useEffect, useState } from "react"
 import useSWR from "swr"
 import Layout from "../components/Layout"
 import { FeedEvent } from "../models/FeedEvents"
-import { formatDate } from "../helpers/DateUtils"
 import { ChartData } from "../models/ChartData"
-import { generateChartDataSetByUser } from "../helpers/ChartUtils"
+import {
+  generateChartDataSetByUser,
+  generateChartLabels,
+} from "../helpers/ChartUtils"
+import { fetcher } from "../helpers/FetchUtils"
+import DataBlock from "../components/DataBlock"
 
 ChartJS.register(
   CategoryScale,
@@ -45,53 +49,6 @@ export const options = {
   },
 }
 
-function generateChartLabels<T, K extends keyof T>(
-  data: Array<T>,
-  property: K
-): Array<number | string> {
-  return Array.from(
-    data
-      .reduce((set, element) => {
-        set.add(element[property])
-        return set
-        // FIXME: this should be any types of the propery set
-      }, new Set<any>())
-      .values()
-  )
-}
-
-const fetcher = async (url: string): Promise<FeedEvent[]> => {
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      "content-type": "application/json;charset=UTF-8",
-    },
-  })
-
-  type JSONResponse = {
-    data?: Omit<FeedEvent[], "fetchedAt">
-    errors?: Array<{ message: string }>
-  }
-
-  const { data, errors }: JSONResponse = await response.json()
-  console.debug("data", data, response)
-  if (response.ok) {
-    const events = data
-    if (events) {
-      // add fetchedAt helper (used in the UI to help differentiate requests)
-      return Object.assign(events, { fetchedAt: formatDate(new Date()) })
-    } else {
-      return Promise.reject(new Error(`No users with event data found`))
-    }
-  } else {
-    // handle the errors
-    const error = new Error(
-      errors?.map((e) => e.message).join("\n") ?? "unknown"
-    )
-    return Promise.reject(error)
-  }
-}
-
 const Graph: NextPage = () => {
   const { data, error } = useSWR<FeedEvent[], Error>(
     "/api/user/metrics",
@@ -114,13 +71,9 @@ const Graph: NextPage = () => {
 
   return (
     <Layout>
-      {error && (
-        <>
-          <span>An error has occured. Try refreshing.</span>
-          <p>{error.message}</p>
-        </>
-      )}
-      {chartData && !error && <Line options={options} data={chartData} />}
+      <DataBlock loading={false} error={error}>
+        {chartData && <Line options={options} data={chartData} />}
+      </DataBlock>
     </Layout>
   )
 }

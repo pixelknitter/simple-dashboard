@@ -4,6 +4,7 @@ import { useRouter } from "next/router"
 import TimelineRoundedIcon from "@mui/icons-material/TimelineRounded"
 import CommentRoundedIcon from "@mui/icons-material/CommentRounded"
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded"
+import { Button, IconButton } from "@mui/material"
 
 const Header: React.FC = () => {
   const router = useRouter()
@@ -14,21 +15,33 @@ const Header: React.FC = () => {
     <nav>
       <div className="left">
         <Link href="/" passHref>
-          <a data-active={isActive("/")}>
+          <IconButton
+            disabled={isActive("/")}
+            color="primary"
+            aria-label="go home"
+          >
             <HomeRoundedIcon fontSize="large" />
-          </a>
+          </IconButton>
         </Link>
       </div>
       <div className="right">
         <Link href="/notes" passHref>
-          <a data-active={isActive("/notes")}>
+          <IconButton
+            disabled={isActive("/notes")}
+            color="primary"
+            aria-label="share some notes with the team"
+          >
             <CommentRoundedIcon fontSize="large" />
-          </a>
+          </IconButton>
         </Link>
         <Link href="/graph" passHref>
-          <a data-active={isActive("/graph")}>
+          <IconButton
+            disabled={isActive("/graph")}
+            color="primary"
+            aria-label="share some notes with the team"
+          >
             <TimelineRoundedIcon fontSize="large" />
-          </a>
+          </IconButton>
         </Link>
       </div>
       <style jsx>{`
@@ -37,26 +50,8 @@ const Header: React.FC = () => {
           padding: 2rem;
           align-items: center;
         }
-        .bold {
-          font-weight: bold;
-        }
-        a + a {
-          margin-left: 0.25rem;
-        }
-        a {
-          text-decoration: none;
-          color: #000;
-          display: inline-block;
-        }
-        nav div > *[data-active="true"] {
-          color: gray;
-        }
         .right {
           margin-left: auto;
-        }
-        nav div > *:hover {
-          background-color: rgba(200, 70, 200, 0.7);
-          border-radius: 0.5rem;
         }
       `}</style>
     </nav>
