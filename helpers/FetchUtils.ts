@@ -25,7 +25,7 @@ export async function fetcher<T>(
       // add fetchedAt helper (used in the UI to help differentiate requests)
       return Object.assign(data, { fetchedAt: formatDate(new Date()) })
     } else {
-      return Promise.reject(new Error(`No users with event data found`))
+      return Promise.reject(new Error(`No data found at ${url}`))
     }
   } else {
     // handle the errors

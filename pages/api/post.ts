@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next"
 import { JSONResponse } from "../../helpers/FetchUtils"
-import { Post } from "../../models"
+import { Post } from "../../models/schemas"
 import prisma from "../../prisma/db"
 
 // Implement rest endpoints for getting, creating, and posting 'posts'.
