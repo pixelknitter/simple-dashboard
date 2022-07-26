@@ -50,28 +50,27 @@ export const options = {
 }
 
 const Graph: NextPage = () => {
-  const { data, error } = useSWR<FeedEvent[], Error>(
+  const { data, error, isValidating } = useSWR<FeedEvent[], Error>(
     "/api/user/metrics",
     fetcher
   )
-  const [chartData, setChartData] = useState<ChartData<FeedEvent> | undefined>()
+  const [chartData, setChartData] = useState<ChartData<FeedEvent>>()
 
   useEffect(() => {
-    if (!data) {
-      return console.debug("no way to present the charts without data")
-    }
-    const sets = generateChartDataSetByUser(data)
-    const labels = generateChartLabels(data, "timestamp")
+    if (data) {
+      const sets = generateChartDataSetByUser(data)
+      const labels = generateChartLabels(data, "timestamp")
 
-    setChartData({
-      labels,
-      datasets: sets,
-    })
+      setChartData({
+        labels,
+        datasets: sets,
+      })
+    }
   }, [data])
 
   return (
     <Layout>
-      <DataBlock loading={false} error={error}>
+      <DataBlock loading={isValidating} error={error}>
         {chartData && <Line options={options} data={chartData} />}
       </DataBlock>
     </Layout>

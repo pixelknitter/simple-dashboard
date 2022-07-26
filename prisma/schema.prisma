@@ -12,13 +12,17 @@ datasource db {
 
 model Post {
   id        Int     @id @default(autoincrement())
+  /// @zod.trim()
+  /// @zod.min(1, { message: "Cannot be empty" }),
   author String
+  /// @zod.trim()
+  /// @zod.min(1, { message: "Cannot be empty" }),
   body   String
 }
 
 generator zod {
   provider                 = "zod-prisma"
-  output                   = "./zod" // (default) the directory where generated zod schemas will be saved
+  output                   = "../models" // (default) the directory where generated zod schemas will be saved
 
   relationModel            = true // (default) Create and export both plain and related models.
   // relationModel         = "default" // Do not export model without relations.

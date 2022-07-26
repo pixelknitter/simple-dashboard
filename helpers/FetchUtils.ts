@@ -9,7 +9,7 @@ export type JSONResponse<T> = {
 
 export async function fetcher<T>(
   url: string,
-  method: SupportedHTTPMethods
+  method: SupportedHTTPMethods = "GET"
 ): Promise<T> {
   const response = await fetch(url, {
     method: method,

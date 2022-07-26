@@ -1,37 +1,36 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next"
-import { Post } from "../../models/Post"
-// import prisma from "../../lib/prisma"
+import { JSONResponse } from "../../helpers/FetchUtils"
+import { Post } from "../../models"
+import prisma from "../../prisma/db"
 
+// Implement rest endpoints for getting, creating, and posting 'posts'.
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse<JSONResponse<Post[]>>
 ) {
   if (req.method === "POST") {
-    // const { title, content, authorEmail } = req.body
-    // const result = await prisma.post.create({
-    //   data: {
-    //     title: title,
-    //     content: content,
-    //     author: { connect: { email: authorEmail } },
-    //   },
-    // })
-    // return res.json(result)
-  }
-  if (req.method === "PUT") {
+    const { author, body } = req.body
+    try {
+      await prisma.post.create({
+        data: {
+          author,
+          body,
+        },
+      })
+      // return the updated posts
+      const posts = await prisma.post.findMany()
+      return res.json({ data: posts })
+    } catch (error: any) {
+      return res.status(500).json({ errors: [error?.message] })
+    }
   }
   if (req.method === "GET") {
-    res.status(200).json({ data: testPosts })
-    // const posts = await prisma.post.findMany({
-    //   where: { published: true },
-    //   include: { author: true },
-    // })
-    // res.json(posts)
+    try {
+      const posts = await prisma.post.findMany()
+      return res.status(200).json({ data: posts })
+    } catch (error: any) {
+      return res.status(500).json({ errors: [error?.message] })
+    }
   }
-  // Implement rest endpoints for getting, creating, and posting 'posts'.
 }
-
-const testPosts: Post[] = [
-  { author: "John", body: "You're doing a great job" },
-  { author: "Eddie", body: "Keep going!" },
-]

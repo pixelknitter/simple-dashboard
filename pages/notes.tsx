@@ -1,10 +1,12 @@
+import { useEffect, useState } from "react"
 import { Box, Button, TextField, Typography } from "@mui/material"
 import { NextPage } from "next"
 import useSWR from "swr"
 import Layout from "../components/Layout"
 import DataBlock from "../components/DataBlock"
 import { fetcher } from "../helpers/FetchUtils"
-import { Post, PostSchema } from "../models/Post"
+import type { Post } from "../models"
+import { PostModel } from "../models/Post"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import CommentCard from "../components/CommentCard"
@@ -12,21 +14,37 @@ import CommentCard from "../components/CommentCard"
 const Notes: NextPage = () => {
   const {
     data: posts,
+    isValidating,
     error: allPostsError,
     mutate,
   } = useSWR<Post[], Error>("/api/post", fetcher)
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<Post>({
     reValidateMode: "onSubmit",
     mode: "all",
-    resolver: zodResolver(PostSchema),
+    resolver: zodResolver(PostModel),
   })
+  const [isSubmitSuccessful, setSubmitSuccessful] = useState(false)
 
-  const createPost = (data: Post) => {
-    console.debug("On Submit:", data)
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset()
+    }
+  }, [isSubmitSuccessful, reset])
+
+  const createPost = async (newPost: Post) => {
+    console.debug("On Submit:", newPost)
+    try {
+      await mutate(async () => posts?.concat(newPost))
+      setSubmitSuccessful(true)
+    } catch (error) {
+    } finally {
+      setSubmitSuccessful(false)
+    }
   }
 
   return (
@@ -73,7 +91,7 @@ const Notes: NextPage = () => {
       </Box>
       <Box sx={{ marginTop: 1.25, marginBottom: 1.25 }}>
         <Typography variant="h4">Comments</Typography>
-        <DataBlock loading={false} error={allPostsError}>
+        <DataBlock loading={isValidating} error={allPostsError}>
           {posts?.map((post, index) => (
             <CommentCard key={`${index}+${post.author}`} post={post} />
           ))}
