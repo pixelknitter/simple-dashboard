@@ -1,15 +1,26 @@
 import { useEffect, useState } from "react"
-import { Box, Button, TextField, Typography } from "@mui/material"
+import {
+  Alert,
+  Box,
+  Button,
+  Collapse,
+  TextField,
+  Typography,
+} from "@mui/material"
 import { NextPage } from "next"
 import useSWR from "swr"
 import Layout from "../components/Layout"
 import DataBlock from "../components/DataBlock"
-import { fetcher } from "../helpers/FetchUtils"
+import { fetcher, updater } from "../helpers/FetchUtils"
 import type { Post } from "../models/schemas"
 import { PostModel } from "../models/Post"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import CommentCard from "../components/CommentCard"
+
+const POST_API = "/api/post"
+
+type LocalPost = Omit<Post, "id">
 
 const Notes: NextPage = () => {
   const {
@@ -17,34 +28,52 @@ const Notes: NextPage = () => {
     isValidating,
     error: allPostsError,
     mutate,
-  } = useSWR<Post[], Error>("/api/post", fetcher)
+  } = useSWR<Post[], Error>(POST_API, fetcher)
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Post>({
+  } = useForm<LocalPost>({
     reValidateMode: "onSubmit",
     mode: "all",
-    resolver: zodResolver(PostModel),
+    resolver: zodResolver(PostModel.omit({ id: true })),
   })
   const [isSubmitSuccessful, setSubmitSuccessful] = useState(false)
+  const [showAlert, setShowAlert] = useState(false)
 
   useEffect(() => {
+    console.debug("update on submission")
     if (isSubmitSuccessful) {
       reset()
     }
   }, [isSubmitSuccessful, reset])
 
-  const createPost = async (newPost: Post) => {
+  const createPost = async (newPost: LocalPost) => {
     console.debug("On Submit:", newPost)
     try {
-      await mutate(async () => posts?.concat(newPost))
-      setSubmitSuccessful(true)
-    } catch (error) {
+      await mutate(async (oldPosts) => {
+        console.debug("On mutate - before:", oldPosts)
+        const posts = await updater<Post[], LocalPost>(
+          POST_API,
+          "POST",
+          newPost
+        )
+        setSubmitSuccessful(true)
+        setShowAlert(false)
+        console.debug("On mutate - after:", posts)
+        return posts
+      })
+    } catch (error: any) {
+      console.error("Oops, an error occured", error)
     } finally {
       setSubmitSuccessful(false)
     }
+  }
+
+  const onError = (errors: any) => {
+    setShowAlert(true)
+    console.log(errors)
   }
 
   return (
@@ -59,9 +88,21 @@ const Notes: NextPage = () => {
           },
         }}
         autoComplete="off"
-        onSubmit={handleSubmit(createPost)}
+        onSubmit={handleSubmit(createPost, onError)}
       >
         <Typography variant="h4">Add a comment</Typography>
+        <Collapse in={showAlert}>
+          <Alert
+            severity="error"
+            sx={{ marginTop: 1, marginBottom: 1 }}
+            onClose={() => {
+              setShowAlert(false)
+            }}
+          >
+            Oops, an error has occured submitting your comment. Try again in a
+            moment.
+          </Alert>
+        </Collapse>
         <TextField
           id="standard-basic"
           label="Author"
