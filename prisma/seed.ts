@@ -1,38 +1,33 @@
+import { Prisma } from "@prisma/client"
 import prisma from "./db"
 
 async function main() {
-  await prisma.post.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
+  let users: Prisma.PostCreateInput[] = [
+    {
       author: "Eddie",
       body: "You're doing a great job",
     },
-  })
-  await prisma.post.upsert({
-    where: { id: 2 },
-    update: {},
-    create: {
+    {
       author: "Eddie",
       body: "Keep going!",
     },
-  })
-  await prisma.post.upsert({
-    where: { id: 3 },
-    update: {},
-    create: {
+    {
       author: "Jon",
       body: "Way to go!",
     },
-  })
-  await prisma.post.upsert({
-    where: { id: 4 },
-    update: {},
-    create: {
+    {
       author: "Alondra",
       body: "What an inspiration!",
     },
-  })
+  ]
+
+  await Promise.all(
+    users.map(async (user) => {
+      await prisma.post.create({
+        data: user,
+      })
+    })
+  )
   const posts = prisma.post.findMany()
   console.debug("Done.", { posts })
 }
