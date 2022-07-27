@@ -1,5 +1,5 @@
 import { Card, CardContent, Typography } from "@mui/material"
-import { Post } from "../models/Post"
+import { Post } from "../models/schemas"
 
 interface Props {
   post: Post
