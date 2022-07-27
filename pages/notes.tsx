@@ -1,22 +1,17 @@
 import { useEffect, useState } from "react"
-import {
-  Alert,
-  Box,
-  Button,
-  Collapse,
-  TextField,
-  Typography,
-} from "@mui/material"
+import { Alert, Box, Collapse, TextField, Typography } from "@mui/material"
 import { NextPage } from "next"
 import useSWR from "swr"
-import Layout from "../components/Layout"
-import DataBlock from "../components/DataBlock"
 import { fetcher, updater } from "../helpers/FetchUtils"
 import type { Post } from "../models/schemas"
 import { PostModel } from "../models/post"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import Layout from "../components/Layout"
+import DataBlock from "../components/DataBlock"
 import CommentCard from "../components/CommentCard"
+import { LoadingButton } from "@mui/lab"
+import SendIcon from "@mui/icons-material/Send"
 
 const POST_API = "/api/post"
 
@@ -41,6 +36,7 @@ const Notes: NextPage = () => {
   })
   const [isSubmitSuccessful, setSubmitSuccessful] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     console.debug("update on submission")
@@ -52,6 +48,7 @@ const Notes: NextPage = () => {
   const createPost = async (newPost: LocalPost) => {
     console.debug("On Submit:", newPost)
     try {
+      setLoading(true)
       await mutate(async (oldPosts) => {
         console.debug("On mutate - before:", oldPosts)
         const posts = await updater<Post[], LocalPost>(
@@ -64,6 +61,7 @@ const Notes: NextPage = () => {
         console.debug("On mutate - after:", posts)
         return posts
       })
+      setLoading(false)
     } catch (error: any) {
       console.error("Oops, an error occured", error)
     } finally {
@@ -126,9 +124,16 @@ const Notes: NextPage = () => {
             {...register("body")}
           />
         </div>
-        <Button variant="contained" type="submit" value="submit">
-          Submit
-        </Button>
+        <LoadingButton
+          type="submit"
+          value="submit"
+          endIcon={<SendIcon />}
+          loading={loading}
+          loadingPosition="end"
+          variant="contained"
+        >
+          Send
+        </LoadingButton>
       </Box>
       <Box sx={{ marginTop: 1.25, marginBottom: 1.25 }}>
         <Typography variant="h4">Comments</Typography>

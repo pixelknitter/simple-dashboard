@@ -21,6 +21,7 @@ import {
 } from "../helpers/ChartUtils"
 import { fetcher } from "../helpers/FetchUtils"
 import DataBlock from "../components/DataBlock"
+import { Box } from "@mui/material"
 
 ChartJS.register(
   CategoryScale,
@@ -70,9 +71,11 @@ const Graph: NextPage = () => {
 
   return (
     <Layout>
-      <DataBlock loading={isValidating} error={error}>
-        {chartData && <Line options={options} data={chartData} />}
-      </DataBlock>
+      <Box mb={2}>
+        <DataBlock loading={isValidating} error={error}>
+          {chartData && <Line options={options} data={chartData} />}
+        </DataBlock>
+      </Box>
     </Layout>
   )
 }

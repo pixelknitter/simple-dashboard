@@ -40,6 +40,8 @@
 - configuring the Heroku Postgres instance was an extra step that required additional testing. Next time, I'd start with setting that up.
 - improve the loading states - they're pretty basic
 - ended up skipping tests - could configure them to run when deployment
+- add `husky` git hooks to prevent deployment of TypeErrors
+- add import aliases to clean up the import paths in files
 
 ## What went well?
 
