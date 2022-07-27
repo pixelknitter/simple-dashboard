@@ -55,9 +55,12 @@ Using these libraries/tools doesn't give you any extra points. Feel free to use 
 - the graph has a simple interface that could be improved with a more readable x-axis labeling
 - the notes page could include more styling clean up to improve the negative space
 - the `Layout` component added more white space than originally intended. Didn't bother to dig into this for now.
+- configuring the Heroku Postgres instance was an extra step that required additional testing. Next time, I'd start with setting that up.
+- improve the loading states - they're pretty basic
 
 ## What went well?
 
 - Enjoyed trying out some new technologies and organizing the code
 - Made use of generics
 - Converted the test data for graph into an API as well
+- Setup a local Postgres instance for deployment
