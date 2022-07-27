@@ -11,6 +11,7 @@
      username: local
      password: password
      ```
+     2. Launch the local PostGRES and use the provided `.env`
    - **SQLite**
      1. Swap out your `datasource` in `schema.prisma`:
      ```prisma
@@ -19,13 +20,14 @@
          url      = env("DATABASE_URL")
        }
      ```
-     2. Update your `.env` to instead point to:
+     1. Update your `.env` to instead point to:
      ```bash
      DATABASE_URL="file:./dev.db"
      ```
-     3. Delete `./prisma/migrations`
-     4. Run `prisma migrate dev --name init` to initialize the local DB - this should create a `./prisma/dev.db` if one doesn't exist
-     5. You can see the database by running `yarn prisma seed`
+     1. Delete `./prisma/migrations`
+     2. Run `prisma migrate dev --name init` to initialize the local DB - this should create a `./prisma/dev.db` if one doesn't exist
+     3. You can see the database by running `yarn prisma seed`
+2. Run locally: `yarn dev`
 
 # Retrospective
 
