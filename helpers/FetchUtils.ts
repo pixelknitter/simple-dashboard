@@ -51,7 +51,7 @@ export async function updater<K, T>(
   if (response.ok) {
     if (data) {
       // add fetchedAt helper (used in the UI to help differentiate requests)
-      return Object.assign(data, { fetchedAt: formatDate(new Date()) })
+      return Object.assign(data, { updatedAt: formatDate(new Date()) })
     } else {
       return Promise.reject(new Error(`No data found at ${url}`))
     }
