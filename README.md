@@ -42,6 +42,8 @@
 - ended up skipping tests - could configure them to run when deployment
 - add `husky` git hooks to prevent deployment of TypeErrors
 - add import aliases to clean up the import paths in files
+- graph could look better on mobile (currently flattens)
+- improve the UX of the timestamps (date/time formatting) - originally had issues with the chart library where it shifted the values if I modified the labels
 
 ## What went well?
 
